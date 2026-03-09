@@ -596,7 +596,6 @@ function ExpenseForm({
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             inputMode="decimal"
-            autoFocus
           />
         </div>
       </div>
