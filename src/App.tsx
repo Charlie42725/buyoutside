@@ -44,15 +44,18 @@ function genId() {
 }
 
 function fmt(n: number) {
-  return Math.round(n).toLocaleString('zh-TW')
+  return n.toLocaleString('zh-TW', { minimumFractionDigits: 0, maximumFractionDigits: 2 })
 }
 
+// 匯率為「1 台幣 = X 外幣」，所以換算台幣用除法
 function productTWD(p: Product) {
-  return p.price * p.quantity * p.exchangeRate
+  if (p.currency === 'TWD') return p.price * p.quantity
+  return (p.price * p.quantity) / p.exchangeRate
 }
 
 function expenseTWD(e: Expense) {
-  return e.amount * e.exchangeRate
+  if (e.currency === 'TWD') return e.amount
+  return e.amount / e.exchangeRate
 }
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
@@ -299,7 +302,7 @@ function ProductForm({
         </div>
         <div className="form-group">
           <label className="form-label" htmlFor="p-rate">
-            匯率
+            匯率（1 台幣 = ? {currency}）
             {currency === 'TWD' && <span className="form-hint">（固定 1）</span>}
           </label>
           <input
@@ -308,7 +311,7 @@ function ProductForm({
             type="number"
             min="0"
             step="any"
-            placeholder={currency === 'KRW' ? '例：0.023' : '例：32.5'}
+            placeholder={currency === 'KRW' ? '例：44.5' : currency === 'USD' ? '例：0.031' : '1'}
             value={currency === 'TWD' ? '1' : exchangeRate}
             onChange={(e) => setExchangeRate(e.target.value)}
             disabled={currency === 'TWD'}
@@ -609,7 +612,7 @@ function ExpenseForm({
       {currency !== 'TWD' && (
         <div className="form-group">
           <label className="form-label" htmlFor="e-rate">
-            匯率（1 {currency} = ? 台幣）
+            匯率（1 台幣 = ? {currency}）
           </label>
           <input
             id="e-rate"
@@ -617,7 +620,7 @@ function ExpenseForm({
             type="number"
             min="0"
             step="any"
-            placeholder={currency === 'KRW' ? '例：0.023' : '例：32.5'}
+            placeholder={currency === 'KRW' ? '例：44.5' : '例：0.031'}
             value={exchangeRate}
             onChange={(e) => setExchangeRate(e.target.value)}
             inputMode="decimal"
