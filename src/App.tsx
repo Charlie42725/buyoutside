@@ -901,6 +901,10 @@ export default function App() {
 
   return (
     <div className="app">
+      <div className="brand-bar">
+        <img src="/logo.jpg" alt="尚恩潮玩" className="brand-logo" />
+        <span className="brand-sub">代購計算機</span>
+      </div>
       <div className="page-container">
         {page === 'buy' && (
           <BuyPage products={products} setProducts={setProducts} />
