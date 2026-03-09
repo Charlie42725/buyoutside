@@ -158,6 +158,12 @@ function Modal({
   onClose: () => void
   children: React.ReactNode
 }) {
+  // Lock background scroll when modal is open
+  useEffect(() => {
+    document.documentElement.classList.add('modal-open')
+    return () => document.documentElement.classList.remove('modal-open')
+  }, [])
+
   // Close on Escape key
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
